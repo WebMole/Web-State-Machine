@@ -349,6 +349,32 @@ function WsmEdge(id) // {{{
   }; // }}}
 
   /**
+   * Checks for equality between two edges
+   * @param {WsmEdge} The edge to compare with
+   * @return {boolean} <tt>true</tt> if edges are equal, <tt>false</tt>
+   *   otherwise
+   */
+  this.equals = function(e) // {{{
+  {
+    if (e === undefined || e === null)
+    {
+      return false;
+    }
+    if (!(e instanceof WsmEdge))
+    {
+      return false;
+    }
+    if (e.m_destination !== this.m_destination)
+    {
+      return false;
+    }
+    if (e.m_contents !== this.m_contents)
+    {
+      return false;
+    }
+    return true;
+  }; // }}}
+  /**
    * Adds an animation step to the edge. Each action performed in the
    * exploration is associated to an incrementing integer value. 
    * @param {number} The number of the animation step
@@ -388,7 +414,25 @@ function WsmEdge(id) // {{{
     // We count four bytes for the ID, plus the size of the path
     return 4 + this.m_contents.length;
   }; // }}}
- 
+  
+  /**
+   * Checks if a list contains the current edge, and returns it if the case
+   * @param {array} An array of WsmEdges
+   * @return {WsmEdge} The instance of the edge from the array, null if
+   *   none is equal to the current edge
+   */
+  this.elementOf = function(list) // {{{
+  {
+    for (var i = 0; i < list.length; i++)
+    {
+      var el = list[i];
+      if (this.equals(el))
+      {
+        return el;
+      }
+    }
+    return null;
+  }; // }}}
 } // }}}
 
 /**
@@ -874,14 +918,20 @@ function WebStateMachine() // {{{
       var trans = new WsmEdge(++this.m_idEdgeCounter);
       trans.setContents(click_path);
       trans.setDestination(tree_id);
-      trans.addAnimationStep(this.m_animationStepCounter++);
       if (this.m_edges[this.m_currentNodeId] === undefined)
       {
         // Create an array if the slot for source node does not yet exist
         this.m_edges[this.m_currentNodeId] = [];
       }
-      this.m_edges[this.m_currentNodeId].push(trans);
-      this.m_pathSinceBeginning.append(trans);
+      var n_edge = trans.elementOf(this.m_edges[this.m_currentNodeId]);
+      if (n_edge === null)
+      {
+        // Add edge if a similar does not already exists from that node
+        this.m_edges[this.m_currentNodeId].push(trans);
+        n_edge = trans;
+      }
+      n_edge.addAnimationStep(this.m_animationStepCounter++);
+      this.m_pathSinceBeginning.append(n_edge);
     }
     // Update ID of current node
     this.m_domTree = node.getContents();
