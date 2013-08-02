@@ -41,15 +41,23 @@ function VanillaWsm() // extends WebStateMachine {{{
    */
   this.isAcceptableClick = function(path, dom_node) // {{{
   {
-    // We only click on elements inside <body>, and not <script> elements
-    if (path.indexOf("BODY") === -1 && path.indexOf("body") === -1)
+    // We only click on elements strictly inside <body>, and not <script> elements
+    var path_expr = new PathExpression(path);
+    if (!path_expr.contains("BODY") && !path_expr.contains("body"))
     {
       return false;
     }
-    if (path.indexOf("SCRIPT") !== -1)
+    var last_el = path_expr.getLastSegment();
+    if (last_el.m_name === "BODY" || last_el.m_name === "body")
+    {
+      // We don't click on body itself
+      return false;
+    }
+    if (path_expr.contains("SCRIPT"))
     {
       return false;
     }
+    
     return true;
   }; // }}}
   

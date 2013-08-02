@@ -18,6 +18,207 @@
 */
 
 /**
+ * Representation of an edge in a web state machine. An edge stores two
+ * elements of information:
+ * <ul>
+ *  <li>The (x)path in the page leading to the element that was clicked;
+ *    this is called the edge's <em>contents</em>. Currently, this
+ *    contents is represented as a string version of a {@link
+ *    PathExpression} (should be refactored to be a PathExpression
+ *    itself)</li>
+ *  <li>The node ID of the page one reaches after clicking that element;
+ *    this is called the edge's <em>destination</em>. As node IDs in a WSM
+ *    are integers, this destination is an integer too.</li>
+ * </ul>
+ * @constructor
+ * @this {WsmEdge}
+ */
+function WsmEdge(id) // {{{
+{
+  /**
+   * Unique ID given to each edge
+   * @type {number}
+   */
+  this.m_id = id;
+  
+  /**
+   * Edge contents
+   * @type {string}
+   */
+  this.m_contents = "";
+  
+  /**
+   * Edge destination. This should contain the ID of a WsmNode
+   * @type {number}
+   */
+  this.m_destination = 0;
+  
+  /**
+   * List of animation steps concerned with that edge
+   * @type {array}
+   */
+  this.m_animationSteps = [];
+  
+  /**
+   * Get the edge's id
+   * @return {number} The edge's id
+   */
+  this.getId = function() // {{{
+  {
+    return this.m_id;
+  }; // }}}
+  
+  /**
+   * Sets the edge's contents
+   * @param {string} contents The edge's contents
+   */
+  this.setContents = function(contents) // {{{
+  {
+    this.m_contents = contents;
+  }; // }}}
+
+  /**
+   * Returns the edge's contents
+   * @return {string} The edge's contents
+   */
+  this.getContents = function() // {{{
+  {
+    return this.m_contents;
+  }; // }}}
+  
+  /**
+   * Sets the edge's destination
+   * @param {number} destination The edge's destination
+   */
+  this.setDestination = function(destination) // {{{
+  {
+    this.m_destination = destination;
+  }; // }}}
+
+  /**
+   * Returns the edge's destination
+   * @return {number} The edge's destination
+   */
+  this.getDestination = function() // {{{
+  {
+    return this.m_destination;
+  }; // }}}
+
+  /**
+   * Checks for equality between two edges
+   * @param {WsmEdge} The edge to compare with
+   * @return {boolean} <tt>true</tt> if edges are equal, <tt>false</tt>
+   *   otherwise
+   */
+  this.equals = function(e) // {{{
+  {
+    if (e === undefined || e === null)
+    {
+      return false;
+    }
+    if (!(e instanceof WsmEdge))
+    {
+      return false;
+    }
+    if (e.m_destination !== this.m_destination)
+    {
+      return false;
+    }
+    if (e.m_contents !== this.m_contents)
+    {
+      return false;
+    }
+    return true;
+  }; // }}}
+  /**
+   * Adds an animation step to the edge. Each action performed in the
+   * exploration is associated to an incrementing integer value. 
+   * @param {number} The number of the animation step
+   */
+  this.addAnimationStep = function(step_no) // {{{
+  {
+    this.m_animationSteps.push(step_no);
+  }; // }}}
+  
+  /**
+   * Outputs the contents of the node as a string in the DOT language
+   * @param {number} source_id The ID of the source node for that transition
+   * @return {string} The output string in DOT
+   */
+  this.toDot = function(source_id) // {{{
+  {
+    var out = "";
+    out += source_id + " -> " + this.m_destination + " [label=\"" + this.m_contents + "\"]; ## ";
+    for (var i = 0; i < this.m_animationSteps.length; i++)
+    {
+      if (i > 0)
+      {
+        out += ",";
+      }
+      out += this.m_animationSteps[i];
+    }
+    return out;
+  }; // }}}
+  
+  /**
+   * Computes the global size of the EDGE, expressed as an
+   * estimate in bytes.
+   * @return {number} The estimated global byte size
+   */
+  this.getByteSize = function() // {{{
+  {
+    // We count four bytes for the ID, plus the size of the path
+    return 4 + this.m_contents.length;
+  }; // }}}
+  
+  /**
+   * Checks if a list contains the current edge, and returns it if the case
+   * @param {array} An array of WsmEdges
+   * @return {WsmEdge} The instance of the edge from the array, null if
+   *   none is equal to the current edge
+   */
+  this.elementOf = function(list) // {{{
+  {
+    for (var i = 0; i < list.length; i++)
+    {
+      var el = list[i];
+      if (this.equals(el))
+      {
+        return el;
+      }
+    }
+    return null;
+  }; // }}}
+
+  /**
+   * Serializes the content of the object in XML format.
+   * @return {string} A string in XML format representing the object's
+   *   contents
+   */
+  this.toXml = function(indent) // {{{
+  {
+    var i = 0;
+    if (indent === undefined)
+    {
+      indent = "";
+    }
+    var out = "";
+    out += indent + "<edge>\n";
+    out += indent + "  <destination>" + this.m_destination + "</destination>\n";
+    out += indent + "  <contents>" + this.m_contents + "</contents>\n";
+    out += indent + "  <visits>\n";
+    for (i = 0; i < this.m_animationSteps.length; i++)
+    {
+      out += indent + "    <visit>" + this.m_animationSteps[i] + "</visit>\n";
+    }
+    out += indent + "  </visits>\n";
+    out += indent + "</edge>\n";
+    return out;
+  }; // }}}
+  
+} // }}}
+
+/**
  * Representation of a vertex in a web state machine. A vertex stores the
  * following elements:
  * <ul>
@@ -241,6 +442,34 @@ function WsmNode(id) // {{{
     }
     return out;
   }; // }}}
+
+  /**
+   * Serializes the content of the object in XML format.
+   * @return {string} A string in XML format representing the object's
+   *   contents
+   */
+  this.toXml = function(indent) // {{{
+  {
+    var i = 0;
+    if (indent === undefined)
+    {
+      indent = "";
+    }
+    var out = "";
+    out += indent + "<node>\n";
+    out += indent + "  <id>" + this.m_id + "</id>\n";
+    out += indent + "  <visits>\n";
+    for (i = 0; i < this.m_animationSteps.length; i++)
+    {
+      out += indent + "    <visit>" + this.m_animationSteps[i] + "</visit>\n";
+    }
+    out += indent + "  </visits>\n";
+    out += indent + "  <contents>\n";
+    out += this.m_contents.toXml(indent + "  ") + "\n";
+    out += indent + "  </contents>\n";
+    out += indent + "</node>";
+    return out;
+  }; // }}}
 }
 
 /**
@@ -260,180 +489,6 @@ WsmNode.NOT_CLICKED = 0;
 WsmNode.CLICKED = 1;
 
 // }}}
-
-/**
- * Representation of an edge in a web state machine. An edge stores two
- * elements of information:
- * <ul>
- *  <li>The (x)path in the page leading to the element that was clicked;
- *    this is called the edge's <em>contents</em>. Currently, this
- *    contents is represented as a string version of a {@link
- *    PathExpression} (should be refactored to be a PathExpression
- *    itself)</li>
- *  <li>The node ID of the page one reaches after clicking that element;
- *    this is called the edge's <em>destination</em>. As node IDs in a WSM
- *    are integers, this destination is an integer too.</li>
- * </ul>
- * @constructor
- * @this {WsmEdge}
- */
-function WsmEdge(id) // {{{
-{
-  /**
-   * Unique ID given to each edge
-   * @type {number}
-   */
-  this.m_id = id;
-  
-  /**
-   * Edge contents
-   * @type {string}
-   */
-  this.m_contents = "";
-  
-  /**
-   * Edge destination. This should contain the ID of a WsmNode
-   * @type {number}
-   */
-  this.m_destination = 0;
-  
-  /**
-   * List of animation steps concerned with that edge
-   * @type {array}
-   */
-  this.m_animationSteps = [];
-  
-  /**
-   * Get the edge's id
-   * @return {number} The edge's id
-   */
-  this.getId = function() // {{{
-  {
-    return this.m_id;
-  }; // }}}
-  
-  /**
-   * Sets the edge's contents
-   * @param {string} contents The edge's contents
-   */
-  this.setContents = function(contents) // {{{
-  {
-    this.m_contents = contents;
-  }; // }}}
-
-  /**
-   * Returns the edge's contents
-   * @return {string} The edge's contents
-   */
-  this.getContents = function() // {{{
-  {
-    return this.m_contents;
-  }; // }}}
-  
-  /**
-   * Sets the edge's destination
-   * @param {number} destination The edge's destination
-   */
-  this.setDestination = function(destination) // {{{
-  {
-    this.m_destination = destination;
-  }; // }}}
-
-  /**
-   * Returns the edge's destination
-   * @return {number} The edge's destination
-   */
-  this.getDestination = function() // {{{
-  {
-    return this.m_destination;
-  }; // }}}
-
-  /**
-   * Checks for equality between two edges
-   * @param {WsmEdge} The edge to compare with
-   * @return {boolean} <tt>true</tt> if edges are equal, <tt>false</tt>
-   *   otherwise
-   */
-  this.equals = function(e) // {{{
-  {
-    if (e === undefined || e === null)
-    {
-      return false;
-    }
-    if (!(e instanceof WsmEdge))
-    {
-      return false;
-    }
-    if (e.m_destination !== this.m_destination)
-    {
-      return false;
-    }
-    if (e.m_contents !== this.m_contents)
-    {
-      return false;
-    }
-    return true;
-  }; // }}}
-  /**
-   * Adds an animation step to the edge. Each action performed in the
-   * exploration is associated to an incrementing integer value. 
-   * @param {number} The number of the animation step
-   */
-  this.addAnimationStep = function(step_no) // {{{
-  {
-    this.m_animationSteps.push(step_no);
-  }; // }}}
-  
-  /**
-   * Outputs the contents of the node as a string in the DOT language
-   * @param {number} source_id The ID of the source node for that transition
-   * @return {string} The output string in DOT
-   */
-  this.toDot = function(source_id) // {{{
-  {
-    var out = "";
-    out += source_id + " -> " + this.m_destination + " [label=\"" + this.m_contents + "\"]; ## ";
-    for (var i = 0; i < this.m_animationSteps.length; i++)
-    {
-      if (i > 0)
-      {
-        out += ",";
-      }
-      out += this.m_animationSteps[i];
-    }
-    return out;
-  }; // }}}
-  
-  /**
-   * Computes the global size of the EDGE, expressed as an
-   * estimate in bytes.
-   * @return {number} The estimated global byte size
-   */
-  this.getByteSize = function() // {{{
-  {
-    // We count four bytes for the ID, plus the size of the path
-    return 4 + this.m_contents.length;
-  }; // }}}
-  
-  /**
-   * Checks if a list contains the current edge, and returns it if the case
-   * @param {array} An array of WsmEdges
-   * @return {WsmEdge} The instance of the edge from the array, null if
-   *   none is equal to the current edge
-   */
-  this.elementOf = function(list) // {{{
-  {
-    for (var i = 0; i < list.length; i++)
-    {
-      var el = list[i];
-      if (this.equals(el))
-      {
-        return el;
-      }
-    }
-    return null;
-  }; // }}}
-} // }}}
 
 /**
  * Representation of a sequence of clicks on elements. A path sequence is
@@ -1077,6 +1132,64 @@ function WebStateMachine() // {{{
     out += "  0 [shape=none,label=\"\"]; ## 0\n";
     out += "  0 -> 1; ## 0\n";
     out += "}";
+    return out;
+  }; // }}}
+  
+  /**
+   * Serializes the content of the object in XML format.
+   * @return {string} A string in XML format representing the object's
+   *   contents
+   */
+  this.toXml = function(indent) // {{{
+  {
+    var i = 0, node = null;
+    if (indent === undefined)
+    {
+      indent = "";
+    }
+    var out = "";
+    out += indent + "<wsm>\n";
+    out += indent + "  <stats>\n";
+    out += indent + "    <nodeCount>" + this.countNodes() + "</nodeCount>\n";
+    out += indent + "    <edgeCount>" + this.countEdges() + "</edgeCount>\n";
+    out += indent + "    <byteSize>" + this.getByteSize() + "</byteSize>\n";
+    out += indent + "  </stats>\n";
+    out += indent + "  <nodes>\n";
+    for (i = 0; i < this.m_nodes.length; i++)
+    {
+      node = this.m_nodes[i];
+      if (node === undefined || node === null)
+      {
+        continue;
+      }
+      out += node.toXml(indent + "    ") + "\n";
+    }
+    out += indent + "  </nodes>\n";
+    out += indent + "  <edges>\n";
+    for (i = 0; i < this.m_nodes.length; i++)
+    {
+      node = this.m_nodes[i];
+      if (node === undefined || node === null)
+      {
+        continue;
+      }
+      var nid = node.getId();
+      var edge_list = this.m_edges[nid];
+      if (edge_list === undefined || edge_list === null)
+      {
+        continue;
+      }
+      out += indent + "    <source id=\"" + nid + "\">\n";
+      for (var j = 0; j < edge_list.length; j++)
+      {
+        var edge = edge_list[j];
+        out += edge.toXml(indent + "      ") + "\n";
+      }
+      out += indent + "    </source>\n";
+      out += node.toXml(indent + "    ") + "\n";
+    }
+    out += indent + "  </edges>\n";
+    out += indent + "</wsm>";
     return out;
   }; // }}}
   

@@ -56,7 +56,7 @@ function PathSegment() // {{{
     else
     {
       this.m_name = bits[0];
-      this.m_position = parseInt(bits[1].substring(0, bits[1].length - 1));
+      this.m_position = parseInt(bits[1].substring(0, bits[1].length - 1), 10);
     }
   }; // }}}
 } // }}}
@@ -594,11 +594,9 @@ function DomNode(contents) // {{{
       this.m_attributes.push(new DomNodeAttribute(avp.m_name, avp.m_value));
     }
     this.m_handlers = [];
+    if (other_node.m_handlers["on-click"] === true)
     {
-      if (other_node.m_handlers["onclick"] === true)
-      {
-        this.m_handlers["onclick"] = true;
-      }
+      this.m_handlers["on-click"] = true;
     }
     this.m_children = [];
     for (i = 0; i < other_node.m_children.length; i++)
@@ -606,6 +604,49 @@ function DomNode(contents) // {{{
       var child = other_node.m_children[i];
       this.m_children.push(new DomNode(child));
     }
+  }; // }}}
+  
+  /**
+   * Serializes the content of the object in XML format.
+   * @return {string} A string in XML format representing the object's
+   *   contents
+   */
+  this.toXml = function(indent) // {{{
+  {
+    var i = 0;
+    if (indent === undefined)
+    {
+      indent = "";
+    }
+    var out = "";
+    out += indent + "<domNode>\n";
+    var name = this.m_name;
+    if (this.m_isLeaf)
+    {
+      // Enclose contents in CDATA for leaves
+      name = "<![CDATA[" + name + "]]>";
+    }
+    out += indent + "  <name>" + name + "</name>\n";
+    out += indent + "  <children>\n";
+    for (i = 0; i < this.m_children.length; i++)
+    {
+      var child = this.m_children[i];
+      out += child.toXml(indent + "    ") + "\n";
+    }
+    out += indent + "  </children>\n";
+    if (!DomNode.IGNORE_ATTRIBUTES)
+    {
+      out += "  <attributes>\n";
+      for (i = 0; i < this.m_attributes.length; i++)
+      {
+        var avp = this.m_attributes[i];
+        out += "    <attribute name=\"" + avp.m_name + "\"><![CDATA[" + avp.m_value + "]]></attribute>\n";
+      }
+      out += "  </attributes>\n";
+    }
+    out += indent + "  <mark><![CDATA[" + this.m_mark + "]]></mark>\n";
+    out += indent + "</domNode>\n";
+    return out;
   }; // }}}
   
   // If something was passed to the constructor, use it to instantiate the
@@ -658,7 +699,9 @@ DomNode.parseFromDom = function(e) // {{{
       // detect handlers when attached with jQuery.
       if (e.onclick !== undefined && e.onclick !== null)
       {
-        out.m_handlers["onclick"] = true;
+        // We use "on-click" in the table; otherwise JSLint mistakenly
+        // thinks we refer to the onclick event handler and throws an error
+        out.m_handlers["on-click"] = true;
       }
     }
     for (i = 0; i < e.childNodes.length; i++)
