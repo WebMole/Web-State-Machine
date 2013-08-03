@@ -24,7 +24,6 @@
  * the expression <code>E[i]</code> does not denote the <i>i</i>-th sibling,
  * but rather the <i>i</i>-th sibling <em>of name <code>E</code></em>.
  * @constructor
- * @this {PathSegment}
  */
 function PathSegment() // {{{
 {
@@ -72,7 +71,6 @@ function PathSegment() // {{{
  * <code>P</code> of the page's (only) <code>BODY</code> element within its
  * (only) <code>HTML</code> element.
  * @constructor
- * @this {PathExpression}
  * @param {string} contents If specified, instantiates a path expression by
  *   parsing the contents of the string passed as an argument
  */
@@ -187,7 +185,6 @@ function PathExpression(contents) // {{{
  * This object is intended to store DOM element attributes and their
  * respective values.
  * @constructor
- * @this {DomNodeAttribute}
  * @param {string} name The attribute's name
  * @param {string} value The attribute's value
  */
@@ -200,7 +197,6 @@ function DomNodeAttribute(name, value) // {{{
 /**
  * Basic building block for a nested structure of HTML-like elements.
  * @constructor
- * @this {DomNode}
  * @param {Document} contents If specified, instantiates a DOM node by
  *   traversing the current Document object (e.g.
  *   <code>window.document</code> and cloning its contents
@@ -377,7 +373,7 @@ function DomNode(contents) // {{{
    * Returns an element of the DOM tree based on a path expression.
    *
    * @param {PathExpression} path The path expression
-   * @param {number} index Should not be specified
+   * @param {number} [index] Should not be specified
    * @return {DomNode} The DOM node at the end of the path, null if not
    *    found
    */
@@ -608,6 +604,8 @@ function DomNode(contents) // {{{
   
   /**
    * Serializes the content of the object in XML format.
+   * @param {string} [indent] String that will be appended at
+   *   the beginning of every line of the output (used to indent).
    * @return {string} A string in XML format representing the object's
    *   contents
    */

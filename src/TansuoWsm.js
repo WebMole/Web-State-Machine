@@ -21,7 +21,6 @@
  * Implementation of a Web State Machine using the Tansuo exploration
  * algorithm that simulates backtracking.
  * @constructor
- * @this {TansuoWsm}
  */
 function TansuoWsm() // extends NoBacktrackWsm {{{
 {

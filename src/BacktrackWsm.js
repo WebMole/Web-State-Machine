@@ -23,7 +23,6 @@
  * overrides the {@link processReset} method of the {@link VanillaWsm} to
  * jump to the <em>last</em> state since reset.
  * @constructor
- * @this {BacktrackWsm}
  */
 function BacktrackWsm() // extends WebStateMachine {{{
 {

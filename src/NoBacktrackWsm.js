@@ -21,7 +21,6 @@
  * Implementation of a Web State Machine using the WebMole exploration
  * algorithm with no backtracking.
  * @constructor
- * @this {NoBacktrackWsm}
  */
 function NoBacktrackWsm() // extends VanillaWsm {{{
 {

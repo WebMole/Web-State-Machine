@@ -18,8 +18,123 @@
 */
 
 /**
- * Representation of an edge in a web state machine. An edge stores two
- * elements of information:
+ * Representation of an HTTP request made by the browser to the server.
+ * Currently, this object only stores the method (e.g. GET, POST, etc.).
+ * @constructor
+ */
+function WsmHttpRequest() // {{{
+{
+  /**
+   * The method of the HTTP request (e.g. GET, POST, etc.)
+   * @type {number}
+   */
+  this.m_method = 0; // GET
+  
+  /**
+   * Determines the method of this HTTP request
+   * @return {number} An integer representing the method (codes are
+   *  defined below)
+   */
+  this.getMethod = function() // {{{
+  {
+    return this.m_method;
+  }; // }}}
+  
+  /**
+   * Sets the method of this HTTP request
+   * @param {number} m An integer representing the method (codes are
+   *  defined below).
+   */
+  this.setMethod = function(m) // {{{
+  {
+    this.m_method = m;
+  }; // }}}
+  
+  /**
+   * Computes the global size of the request, expressed as an
+   * estimate in bytes.
+   * @return {number} The estimated global byte size
+   */
+  this.getByteSize = function() // {{{
+  {
+    // At the moment, we only store the method = 4 bytes
+    return 4;
+  }; // }}}
+
+  /**
+   * Serializes the content of the object in XML format.
+   * @param {string} [indent] String that will be appended at
+   *   the beginning of every line of the output (used to indent).
+   * @return {string} A string in XML format representing the object's
+   *   contents
+   */
+  this.toXml = function(indent) // {{{
+  {
+    var out = "";
+    out += indent + "<request method=\"" + WsmHttpRequest.codeToName(this.m_method) + "\" />";
+    return out;
+  }; // }}}
+}
+
+/**
+ * Converts a method code into a string name
+ * @param {number} One of the codes defined below
+ * @return {string} The name corresponding to the code
+ */
+WsmHttpRequest.codeToName = function(code) // {{{
+{
+  var out = "";
+  if (code == WsmHttpRequest.GET)
+  {
+    out = "GET";
+  }
+  else if (code == WsmHttpRequest.POST)
+  {
+    out = "POST";
+  }
+  else if (code == WsmHttpRequest.PUT)
+  {
+    out = "PUT";
+  }
+  if (code == WsmHttpRequest.DELETE)
+  {
+    out = "DELETE";
+  }
+  return out;
+}; // }}}
+
+/**
+ * Constant representing the HTTP GET method
+ * @constant
+ * @type {number}
+ */
+WsmHttpRequest.GET = 0;
+
+/**
+ * Constant representing the HTTP POST method
+ * @constant
+ * @type {number}
+ */
+WsmHttpRequest.POST = 1;
+
+/**
+ * Constant representing the HTTP DELETE method
+ * @constant
+ * @type {number}
+ */
+WsmHttpRequest.DELETE = 2;
+
+/**
+ * Constant representing the HTTP PUT method
+ * @constant
+ * @type {number}
+ */
+WsmHttpRequest.PUT = 4;
+// }}}
+
+/**
+ * Representation of an edge in a web state machine. An edge stores the
+ * following elements of information:
  * <ul>
  *  <li>The (x)path in the page leading to the element that was clicked;
  *    this is called the edge's <em>contents</em>. Currently, this
@@ -29,9 +144,11 @@
  *  <li>The node ID of the page one reaches after clicking that element;
  *    this is called the edge's <em>destination</em>. As node IDs in a WSM
  *    are integers, this destination is an integer too.</li>
+ *  <li>The type of HTTP request involved in the transition (if any)</li>
+ *  <li>Whether the request was done through an Ajax call or a normal
+ *    page reload</li>
  * </ul>
  * @constructor
- * @this {WsmEdge}
  */
 function WsmEdge(id) // {{{
 {
@@ -52,6 +169,19 @@ function WsmEdge(id) // {{{
    * @type {number}
    */
   this.m_destination = 0;
+  
+  /**
+   * The HTTP request involved in the transition
+   * @type {WsmHttpRequest}
+   */
+  this.m_httpRequest = null;
+  
+  /**
+   * Whether this edge involved an Ajax call (true) or a normal
+   * page reload (false)
+   * @type {boolean}
+   */
+  this.m_isAjax = false;
   
   /**
    * List of animation steps concerned with that edge
@@ -87,6 +217,49 @@ function WsmEdge(id) // {{{
   }; // }}}
   
   /**
+   * Determines if an Ajax call is involved in this edge
+   * @return {boolean} <tt>true</tt> if an Ajax call occurred,
+   *   <tt>false</tt> otherwise
+   */
+  this.isAjax = function() // {{{
+  {
+    return this.m_isAjax;
+  }; // }}}
+  
+  /**
+   * Sets whether an Ajax call is involved in this edge
+   * @param {boolean} <tt>true</tt> if an Ajax call occurred,
+   *   <tt>false</tt> otherwise
+   */
+  this.setAjax = function(b) // {{{
+  {
+    this.m_isAjax = b;
+  }; // }}}
+  
+  /**
+   * Sets the HTTP request associated with the edge
+   * @param {WsmHttpRequest} The HTTP request, null to remove
+   */
+  this.setHttpRequest = function(r) // {{{
+  {
+    if (!(r instanceof WsmHttpRequest))
+    {
+      console.error("Invalid argument for setHttpRequest");
+      return;
+    }
+    this.m_httpRequest(r);
+  }; // }}}
+  
+  /**
+   * Returns the HTTP request associated with the edge
+   * @return {WsmHttpRequest} The HTTP request, null if none
+   */
+  this.getHttpRequest = function() // {{{
+  {
+    return this.m_httpRequest();
+  }; // }}}
+  
+  /**
    * Sets the edge's destination
    * @param {number} destination The edge's destination
    */
@@ -105,7 +278,9 @@ function WsmEdge(id) // {{{
   }; // }}}
 
   /**
-   * Checks for equality between two edges
+   * Checks for equality between two edges. <strong>NOTE:</strong> the
+   * contents of HTTP requests are not considered in the equality (this is
+   * considered as auxiliary information only).
    * @param {WsmEdge} The edge to compare with
    * @return {boolean} <tt>true</tt> if edges are equal, <tt>false</tt>
    *   otherwise
@@ -167,8 +342,14 @@ function WsmEdge(id) // {{{
    */
   this.getByteSize = function() // {{{
   {
-    // We count four bytes for the ID, plus the size of the path
-    return 4 + this.m_contents.length;
+    // We count four bytes for the ID, plus the size of the path, plus
+    // the size of the HTTP request
+    var size = 4 + this.m_contents.length;
+    if (this.m_httpRequest !== undefined && this.m_httpRequest !== null)
+    {
+      size += this.m_httpRequest.getByteSize();
+    }
+    return size;
   }; // }}}
   
   /**
@@ -192,6 +373,8 @@ function WsmEdge(id) // {{{
 
   /**
    * Serializes the content of the object in XML format.
+   * @param {string} [indent] String that will be appended at
+   *   the beginning of every line of the output (used to indent).
    * @return {string} A string in XML format representing the object's
    *   contents
    */
@@ -206,6 +389,25 @@ function WsmEdge(id) // {{{
     out += indent + "<edge>\n";
     out += indent + "  <destination>" + this.m_destination + "</destination>\n";
     out += indent + "  <contents>" + this.m_contents + "</contents>\n";
+    var aj = "false";
+    if (this.m_isAjax)
+    {
+      aj = "true";
+    }
+    out += indent + "  <isAjax>";
+    if (this.m_isAjax)
+    {
+      out += "true";
+    }
+    else
+    {
+      out += "false";
+    }
+    out += "</isAjax>\n";
+    if (this.m_httpRequest !== undefined && this.m_httpRequest !== null)
+    {
+      out += this.m_httpRequest.toXml(indent + "    ") + "\n";
+    }
     out += indent + "  <visits>\n";
     for (i = 0; i < this.m_animationSteps.length; i++)
     {
@@ -231,7 +433,6 @@ function WsmEdge(id) // {{{
  *     methods.</li>
  * </ul>
  * @constructor
- * @this {WsmNode}
  */
 function WsmNode(id) // {{{
 {
@@ -280,6 +481,8 @@ function WsmNode(id) // {{{
    * Returns whether the node is completely visited
    * @return {boolean} true or false, depending on whether the node still
    *   has elements that have not been clicked
+   * @method
+   * @public
    */
   this.isExhausted = function(is_acceptable_click) // {{{
   {
@@ -345,7 +548,12 @@ function WsmNode(id) // {{{
   }; // }}}
   
   /**
-   * 
+   * Returns the next element to click.
+   * @param {function} is_acceptable_click The filtering function used to
+   *   determine whether an element is candidate for the next click. If
+   *   nothing is passed, the node will assume all elements can be clicked.
+   * @return {string} A path to the next element to click, null if none
+   *   could be found (i.e. we have exhausted this page)
    */
   this.getNextElement = function(is_acceptable_click) // {{{
   {
@@ -358,9 +566,13 @@ function WsmNode(id) // {{{
   }; // }}}
   
   /**
+   * Precomputes the next element to click, in preparation for the next
+   * call to {@link getNextElement}. This is an internal method that should
+   * not be called directly.
    * @param {function} is_acceptable_click The filtering function used to
    *   determine whether an element is candidate for the next click. If
    *   nothing is passed, the node will assume all elements can be clicked.
+   * @private
    */
   this.computeNextElement = function(is_acceptable_click) // {{{
   {
@@ -445,6 +657,8 @@ function WsmNode(id) // {{{
 
   /**
    * Serializes the content of the object in XML format.
+   * @param {string} [indent] String that will be appended at
+   *   the beginning of every line of the output (used to indent).
    * @return {string} A string in XML format representing the object's
    *   contents
    */
@@ -496,7 +710,6 @@ WsmNode.CLICKED = 1;
  * implemented methods are blind about they type of objects they
  * manipulate).
  * @constructor
- * @this {PathSequence}
  */
 function PathSequence(ps) // {{{
 {
@@ -653,7 +866,6 @@ function PathSequence(ps) // {{{
  * different types of crawlers. {@link VanillaWsm} is a dummy example of
  * such an extension that can be used as scaffolding for custom WSMs.
  * @constructor
- * @this {WebStateMachine}
  */
 function WebStateMachine() // {{{
 {
@@ -1137,6 +1349,8 @@ function WebStateMachine() // {{{
   
   /**
    * Serializes the content of the object in XML format.
+   * @param {string} [indent] String that will be appended at
+   *   the beginning of every line of the output (used to indent).
    * @return {string} A string in XML format representing the object's
    *   contents
    */

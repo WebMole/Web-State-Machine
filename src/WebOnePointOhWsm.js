@@ -26,7 +26,6 @@
  *    Web 1.0 crawlers disregard links between pages anyway)</li>
  * </ul>
  * @constructor
- * @this {WebOnePointOhWsm}
  */
 function WebOnePointOhWsm() // extends VanillaWsm {{{
 {

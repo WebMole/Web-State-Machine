@@ -23,7 +23,6 @@
  * the most generic form of a WSM. Developers are encouraged to use this
  * class as a template to create their own WSMs.
  * @constructor
- * @this {VanillaWsm}
  */
 function VanillaWsm() // extends WebStateMachine {{{
 {
