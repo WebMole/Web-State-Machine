@@ -21,8 +21,9 @@
  * Implementation of a Web State Machine using the Tansuo exploration
  * algorithm that simulates backtracking.
  * @constructor
+ * @extends NoBacktrackWsm
  */
-function TansuoWsm() // extends NoBacktrackWsm {{{
+function TansuoWsm() // {{{
 {
   // Used to extend the prototype of VanillaWsm
   this.NoBacktrackWsm = NoBacktrackWsm;

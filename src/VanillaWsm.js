@@ -23,8 +23,9 @@
  * the most generic form of a WSM. Developers are encouraged to use this
  * class as a template to create their own WSMs.
  * @constructor
+ * @extends WebStateMachine
  */
-function VanillaWsm() // extends WebStateMachine {{{
+function VanillaWsm() // {{{
 {
   // Used to extend the prototype of WSM
   this.WebStateMachine = WebStateMachine;
