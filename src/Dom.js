@@ -310,15 +310,20 @@ function DomNode(contents) // {{{
    */
   this.prefixLookForMark = function(m, path) // {{{
   {
-    if (this.m_name == "#document")
+    /*if (this.m_name == "#document")
     {
       // We ignore the top-level element, which should always be "#document"
       if (this.m_children !== undefined && this.m_children.length > 0)
       {
-        return this.m_children[0].prefixLookForMark(m);
+	    for (var i = 0; i < this.m_children.length; i++)
+		{
+		  var child = this.m_children[i];
+		  return child.prefixLookForMark(m);
+		}
+        
       }
       return null;
-    }
+    }*/
     if (this.m_isLeaf)
     {
       // We ignore leaf (i.e. text) nodes
@@ -383,16 +388,26 @@ function DomNode(contents) // {{{
     {
       index = 0;
     }
-    if (index > path.getLength())
+    if (index > path.getLength() - 1)
     {
       console.error("Error processing path");
       return null;
     }
-    if (index == path.getLength())
+    if (index == path.getLength() - 1)
     {
       return this;
     }
-    var piece = path.getSegment(index);
+	/*if (index === 0)
+	{
+	  var first_segment = path.getSegment(0);
+	  var first_name = first_segment.getName();
+	  if (first_name != this.m_name)
+	  {
+	    return null;
+	  }
+	  index++;
+	}*/
+    var piece = path.getSegment(index + 1);
     var pos = piece.getPosition();
     var name = piece.getName();
     var good_name_count = 0;
@@ -823,7 +838,7 @@ function get_element_from_path(dom, path, index) // {{{
 {
   if (index === undefined)
   {
-    index = 0;
+    index = 1; // We ignore the #document at the beginning of the path
   }
   if (index > path.getLength())
   {

@@ -33,7 +33,7 @@ describe("VanillaWsm behaviour", function() {
     
     it("Recording a transition to a new node", function() {
         wsm.setCurrentDom(pages[1]);
-        wsm.setCurrentDom(pages[2], "html/body/p/a[0]");
+        wsm.setCurrentDom(pages[2], "#document/html/body/p/a[0]");
         expect(wsm.m_nodes.length).toEqual(2);
         var n = wsm.getNodeFromDom(pages[1]);
         var id = n.getId();
@@ -45,12 +45,12 @@ describe("VanillaWsm behaviour", function() {
     it("Returning the next click", function() {
         var new_page = new DomNode(pages[1]);
         new_page.setAllMarks(WsmNode.CLICKED);
-        var el = new_page.getElementFromPathString("html/body[0]/p[0]/a[1]");
+        var el = new_page.getElementFromPathString("#document/html/body[0]/p[0]/a[1]");
         el.setMark(WsmNode.NOT_CLICKED);
         wsm.setCurrentDom(new_page);
         var next_click = wsm.getNextClick();
         var next_path = next_click.getContents();
-        expect(next_path).toEqual("html/body[0]/p[0]/a[1]");
+        expect(next_path).toEqual("#document/html[0]/body[0]/p[0]/a[1]");
     });
     
     it("Recognizing a dead end", function() {

@@ -41,16 +41,18 @@ describe("DOM manipulation", function() {
     
     it("Parsing a PathExpression from a string", function() {
         var pe = new PathExpression();
-        pe.parseFromString("HTML/BODY/P[1]");
-        expect(pe.getLength()).toEqual(3);
+        pe.parseFromString("#document/HTML/BODY/P[1]");
+        expect(pe.getLength()).toEqual(4);
         var segment = null;
-        segment = pe.getSegment(0);
+		segment = pe.getSegment(0);
+        expect(segment.getName()).toEqual("#document");
+        segment = pe.getSegment(1);
         expect(segment.getName()).toEqual("HTML");
         expect(segment.getPosition()).toEqual(0);
-        segment = pe.getSegment(1);
+        segment = pe.getSegment(2);
         expect(segment.getName()).toEqual("BODY");
         expect(segment.getPosition()).toEqual(0);
-        segment = pe.getSegment(2);
+        segment = pe.getSegment(3);
         expect(segment.getName()).toEqual("P");
         expect(segment.getPosition()).toEqual(1);
     });
@@ -62,11 +64,22 @@ describe("DOM manipulation", function() {
     it("Getting DOM element from PathExpression", function() {
         var s = "<#document><a><b><c>1</c><c>2</c></b><d>3</d><b><c>4</c></b></a></#document>";
         var dd = DomNode.parseFromString(s);
-        var path_s = "a/b[1]/c[0]";
+        var path_s = "#document/a/b[1]/c[0]";
         var el = dd.getElementFromPathString(path_s);
         expect(el).toBeDefined();
+		expect(el).not.toEqual(null);
         expect(el.getName()).toEqual("c");
         expect(el.m_children[0].getName()).toEqual("4");
+    });
+	
+	    it("Getting root DOM element from PathExpression", function() {
+        var s = "<#document><a><b><c>1</c><c>2</c></b><d>3</d><b><c>4</c></b></a></#document>";
+        var dd = DomNode.parseFromString(s);
+        var path_s = "#document";
+        var el = dd.getElementFromPathString(path_s);
+        expect(el).toBeDefined();
+		expect(el).not.toEqual(null);
+        expect(el.getName()).toEqual("#document");
     });
     
     describe("Element marking and finding", function() {
@@ -76,24 +89,24 @@ describe("DOM manipulation", function() {
           var el = null;
           el = dd.prefixLookForMark(1);
           expect(el).toBeNull();
-          el = dd.getElementFromPathString("a/b[1]/c[0]");
+          el = dd.getElementFromPathString("#document/a/b[1]/c[0]");
           el.setMark(1);
           var path_to = dd.prefixLookForMark(1);
-          expect(path_to).toEqual("a/b[1]/c[0]");
+          expect(path_to).toEqual("#document/a[0]/b[1]/c[0]");
           // Mark another element "closer" in the traversal
-          el = dd.getElementFromPathString("a/b[1]");
+          el = dd.getElementFromPathString("#document/a/b[1]");
           el.setMark(1);
           path_to = dd.prefixLookForMark(1);
-          expect(path_to).toEqual("a/b[1]");
+          expect(path_to).toEqual("#document/a[0]/b[1]");
       });
       
       it("Finding a marked element (when only one exists)", function() {
         var new_page = DomNode.parseFromString("<#document><html><h1>Page 1</h1><p><a>To page 2</a><a>To page 3</a></p></html></#document>");
         new_page.setAllMarks(1);
-        var el = new_page.getElementFromPathString("html/p/a[1]");
+        var el = new_page.getElementFromPathString("#document/html/p/a[1]");
         el.setMark(0);
         var path_to = new_page.prefixLookForMark(0);
-        expect(path_to).toEqual("html/p[0]/a[1]");
+        expect(path_to).toEqual("#document/html[0]/p[0]/a[1]");
       });
     });
     

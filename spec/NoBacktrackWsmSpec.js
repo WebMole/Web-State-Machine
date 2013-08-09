@@ -39,17 +39,17 @@ describe("NoBacktrackWsm behaviour", function() {
         
         p = new DomNode(pages[2]);
         p.setAllMarks(WsmNode.CLICKED);      
-        wsm.setCurrentDom(p, "html/body[0]/p[0]/a[0]");
+        wsm.setCurrentDom(p, "#document/html/body[0]/p[0]/a[0]");
         
         p = new DomNode(pages[3]);
         p.setAllMarks(WsmNode.CLICKED);
-        el = p.getElementFromPathString("html/body[0]/a[1]");
+        el = p.getElementFromPathString("#document/html/body[0]/a[1]");
         el.setMark(WsmNode.NOT_CLICKED); // Leave a node unclicked in this page     
-        wsm.setCurrentDom(p, "html/body[0]/a[0]");
+        wsm.setCurrentDom(p, "#document/html/body[0]/a[0]");
         
         p = new DomNode(pages[4]);
         p.setAllMarks(WsmNode.CLICKED);        
-        wsm.setCurrentDom(p, "html/body[0]/p[0]/a[0]");    
+        wsm.setCurrentDom(p, "#document/html/body[0]/p[0]/a[0]");    
         
         // Ask for next click: should be empty
         el_to_click = wsm.getNextClick();
