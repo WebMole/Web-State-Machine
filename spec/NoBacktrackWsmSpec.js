@@ -38,7 +38,7 @@ describe("NoBacktrackWsm behaviour", function() {
         wsm.setCurrentDom(p);
         
         p = new DomNode(pages[2]);
-        p.setAllMarks(WsmNode.CLICKED);      
+        p.setAllMarks(WsmNode.CLICKED);
         wsm.setCurrentDom(p, "#document/html/body[0]/p[0]/a[0]");
         
         p = new DomNode(pages[3]);
@@ -49,7 +49,7 @@ describe("NoBacktrackWsm behaviour", function() {
         
         p = new DomNode(pages[4]);
         p.setAllMarks(WsmNode.CLICKED);        
-        wsm.setCurrentDom(p, "#document/html/body[0]/p[0]/a[0]");    
+        wsm.setCurrentDom(p, "#document/html/body[0]/p[0]/a[0]");
         
         // Ask for next click: should be empty
         el_to_click = wsm.getNextClick();
