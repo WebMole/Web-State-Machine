@@ -31,7 +31,7 @@ describe("NoBacktrackWsm behaviour", function() {
         wsm = new NoBacktrackWsm();
     });
     
-    it("Computing the reset path", function() {
+    it("Computes the reset path", function() {
         var p = null, el = null, el_to_click = null;
         p = new DomNode(pages[1]);
         p.setAllMarks(WsmNode.CLICKED);

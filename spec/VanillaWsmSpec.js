@@ -31,7 +31,7 @@ describe("VanillaWsm behaviour", function() {
         expect(WsmNode.NOT_CLICKED).toBeDefined();
     });
     
-    it("Recording a transition to a new node", function() {
+    it("Records a transition to a new node", function() {
         wsm.setCurrentDom(pages[1]);
         wsm.setCurrentDom(pages[2], "#document/html/body/p/a[0]");
         expect(wsm.m_nodes.length).toEqual(2);
@@ -42,7 +42,7 @@ describe("VanillaWsm behaviour", function() {
         expect(wsm.m_pathToFollow.isEmpty()).toEqual(true);
     });
     
-    it("Returning the next click", function() {
+    it("Returns the next click", function() {
         var new_page = new DomNode(pages[1]);
         new_page.setAllMarks(WsmNode.CLICKED);
         var el = new_page.getElementFromPathString("#document/html/body[0]/p[0]/a[1]");
@@ -53,7 +53,7 @@ describe("VanillaWsm behaviour", function() {
         expect(next_path).toEqual("#document/html[0]/body[0]/p[0]/a[1]");
     });
     
-    it("Recognizing a dead end", function() {
+    it("Recognizes a dead end", function() {
         var new_page = new DomNode(pages[1]);
         new_page.setAllMarks(WsmNode.CLICKED);
         wsm.setCurrentDom(new_page);
