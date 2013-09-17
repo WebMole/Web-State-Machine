@@ -323,7 +323,7 @@ function WsmEdge(id) // {{{
   this.toDot = function(source_id) // {{{
   {
     var out = "";
-    out += source_id + " -> " + this.m_destination + " [label=\"" + this.m_contents + "\"]; ## ";
+    out += source_id + " -> " + this.m_destination + " [label=\"" + this.m_contents + "\"]; // ";
     for (var i = 0; i < this.m_animationSteps.length; i++)
     {
       if (i > 0)
@@ -643,7 +643,7 @@ function WsmNode(id) // {{{
   this.toDot = function() // {{{
   {
     var out = "";
-    out += this.m_id + " [shape=circle,label=\"" + this.m_id + "\"]; ## ";
+    out += this.m_id + " [shape=circle,label=\"" + this.m_id + "\"]; // ";
     for (var i = 0; i < this.m_animationSteps.length; i++)
     {
       if (i > 0)
@@ -1094,7 +1094,7 @@ function WebStateMachine() // {{{
    *   (or empty), indicates one has "jumped" to the present page, or that
    *   the current page is the start state of the WSM.
    */
-  this.setCurrentDom = function(d, click_path) // {{{
+  this.setCurrentDom = function(d, click_path, isAjax) // {{{
   {
     var dom = null, node = null, tree_id = null;
     if (d instanceof Document)
@@ -1139,6 +1139,7 @@ function WebStateMachine() // {{{
       this.m_domTree = dom;
       var new_pe = new WsmEdge();
       new_pe.setDestination(this.m_idNodeCounter);
+      new_pe.setAjax(isAjax);
       this.m_pathSinceBeginning.append(new_pe);
       return;
     }
@@ -1341,8 +1342,8 @@ function WebStateMachine() // {{{
       }
     }
     // By convention, node 0 never exists and node 1 is the initial state
-    out += "  0 [shape=none,label=\"\"]; ## 0\n";
-    out += "  0 -> 1; ## 0\n";
+    out += "  0 [shape=none,label=\"\"]; // 0\n";
+    out += "  0 -> 1; // 0\n";
     out += "}";
     return out;
   }; // }}}
