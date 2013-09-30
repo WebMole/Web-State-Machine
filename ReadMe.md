@@ -17,6 +17,14 @@ First, install dependences with [npm](https://npmjs.org/) and [bower](http://bow
 
 You can use [grunt](http://gruntjs.com/) to develop and test with [jasmine](http://pivotal.github.io/jasmine/) on each file save
 
-	grunt watch
+	grunt dev
+
+Run tests (with jasmine) from cli with
+
+    grunt test
+
+Generate minified files
+
+    grunt
 
 See `gruntfile.js` for more details.
