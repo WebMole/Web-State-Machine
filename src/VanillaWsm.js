@@ -1,22 +1,3 @@
-/*
-    WebMole, an automated explorer and tester for Web 2.0 applications
-    Copyright (C) 2012-2013 Gabriel Le Breton, Fabien Maronnaud,
-    Sylvain Hallé et al.
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /**
  * Dummy instantiation of a {@link WebStateMachine}, where each
  * implemented method is kept as simple as possible. This represents
@@ -25,7 +6,7 @@
  * @constructor
  * @extends WebStateMachine
  */
-function VanillaWsm() // {{{
+function VanillaWsm()
 {
   // Used to extend the prototype of WSM
   this.WebStateMachine = WebStateMachine;
@@ -39,7 +20,7 @@ function VanillaWsm() // {{{
    * @return {boolean} <tt>true</tt> when the element at the end of that
    *   path can be clicked, <tt>false</tt> otherwise
    */
-  this.isAcceptableClick = function(path, dom_node) // {{{
+  this.isAcceptableClick = function(path, dom_node)
   {
     // We only click on elements strictly inside <body>, and not <script> elements
     var path_expr = new PathExpression(path);
@@ -59,7 +40,7 @@ function VanillaWsm() // {{{
     }
     
     return true;
-  }; // }}}
+  };
   
   /**
    * Determines if two DOM nodes should be considered equal for the
@@ -74,14 +55,14 @@ function VanillaWsm() // {{{
    * @return {boolean} <tt>true</tt> if the two nodes should be considered
    *   equal, <tt>false</tt> otherwise
    */
-  this.nodesEqual = function(n1, n2) // {{{
+  this.nodesEqual = function(n1, n2)
   {
     if (n1 === undefined || n1 === null || n2 === undefined || n2 === null)
     {
       return false;
     }
     return n1.equals(n2);
-  }; // }}}
+  };
   
   /**
    * Handles the situation where the WSM has reached a dead end and is
@@ -93,7 +74,7 @@ function VanillaWsm() // {{{
    * @return {boolean} <tt>true</tt> if the exploration must continue,
    *   <tt>false</tt> if there is no unvisited page
    */
-  this.processReset = function() // {{{
+  this.processReset = function()
   {
     // Flush the visited path, as we don't need it
     this.m_pathSinceBeginning.clear();
@@ -113,7 +94,7 @@ function VanillaWsm() // {{{
     }
     // If we are here, we are done
     return false;
-  }; // }}}
+  };
   
   /**
    * Processes the DOM tree before saving it to the WSM. See
@@ -124,11 +105,9 @@ function VanillaWsm() // {{{
    * @param {DomNode} The original DOM tree
    * @return {DomNode} The processed DOM tree
    */
-  this.abstractNode = function(dom) // {{{
+  this.abstractNode = function(dom)
   {
     return dom;
-  }; // }}}
+  };
   
-} // }}}
-
-/* :folding=explicit:wrap=none: */
+}

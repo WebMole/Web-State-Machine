@@ -1,22 +1,3 @@
-/*
-    WebMole, an automated explorer and tester for Web 2.0 applications
-    Copyright (C) 2012-2013 Gabriel Le Breton, Fabien Maronnaud,
-    Sylvain Hallé et al.
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /**
  * Dummy instantiation of a {@link WebStateMachine}, where each
  * implemented method is kept as simple as possible. The BacktrackWsm
@@ -25,7 +6,7 @@
  * @constructor
  * @extends VanillaWsm
  */
-function BacktrackWsm() // extends WebStateMachine {{{
+function BacktrackWsm() // extends WebStateMachine
 {
   // Used to extend the prototype of WSM
   this.VanillaWsm = VanillaWsm;
@@ -41,7 +22,7 @@ function BacktrackWsm() // extends WebStateMachine {{{
    * @return {boolean} <tt>true</tt> if the exploration must continue,
    *   <tt>false</tt> if there is no unvisited page
    */
-  this.processReset = function() // {{{
+  this.processReset = function()
   {
     // Pop last state in the state stack and peek next-to-last
     if (this.m_pathSinceBeginning.getLength() === 0)
@@ -62,8 +43,6 @@ function BacktrackWsm() // extends WebStateMachine {{{
     ps.append(new_edge);
     this.m_pathToFollow = ps;
     return true;
-  }; // }}}
+  };
   
-} // }}}
-
-/* :folding=explicit:wrap=none: */
+}

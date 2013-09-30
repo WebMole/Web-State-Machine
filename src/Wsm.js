@@ -1,28 +1,9 @@
-/*
-    WebMole, an automated explorer and tester for Web 2.0 applications
-    Copyright (C) 2012-2013 Gabriel Le Breton, Fabien Maronnaud,
-    Sylvain Hallé et al.
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /**
  * Representation of an HTTP request made by the browser to the server.
  * Currently, this object only stores the method (e.g. GET, POST, etc.).
  * @constructor
  */
-function WsmHttpRequest() // {{{
+function WsmHttpRequest()
 {
   /**
    * The method of the HTTP request (e.g. GET, POST, etc.)
@@ -35,31 +16,31 @@ function WsmHttpRequest() // {{{
    * @return {number} An integer representing the method (codes are
    *  defined below)
    */
-  this.getMethod = function() // {{{
+  this.getMethod = function()
   {
     return this.m_method;
-  }; // }}}
+  };
   
   /**
    * Sets the method of this HTTP request
    * @param {number} m An integer representing the method (codes are
    *  defined below).
    */
-  this.setMethod = function(m) // {{{
+  this.setMethod = function(m)
   {
     this.m_method = m;
-  }; // }}}
+  };
   
   /**
    * Computes the global size of the request, expressed as an
    * estimate in bytes.
    * @return {number} The estimated global byte size
    */
-  this.getByteSize = function() // {{{
+  this.getByteSize = function()
   {
     // At the moment, we only store the method = 4 bytes
     return 4;
-  }; // }}}
+  };
 
   /**
    * Serializes the content of the object in XML format.
@@ -68,12 +49,12 @@ function WsmHttpRequest() // {{{
    * @return {string} A string in XML format representing the object's
    *   contents
    */
-  this.toXml = function(indent) // {{{
+  this.toXml = function(indent)
   {
     var out = "";
     out += indent + "<request method=\"" + WsmHttpRequest.codeToName(this.m_method) + "\" />";
     return out;
-  }; // }}}
+  };
 }
 
 /**
@@ -81,7 +62,7 @@ function WsmHttpRequest() // {{{
  * @param {number} One of the codes defined below
  * @return {string} The name corresponding to the code
  */
-WsmHttpRequest.codeToName = function(code) // {{{
+WsmHttpRequest.codeToName = function(code)
 {
   var out = "";
   if (code == WsmHttpRequest.GET)
@@ -101,7 +82,7 @@ WsmHttpRequest.codeToName = function(code) // {{{
     out = "DELETE";
   }
   return out;
-}; // }}}
+};
 
 /**
  * Constant representing the HTTP GET method
@@ -150,7 +131,7 @@ WsmHttpRequest.PUT = 4;
  * </ul>
  * @constructor
  */
-function WsmEdge(id) // {{{
+function WsmEdge(id)
 {
   /**
    * Unique ID given to each edge
@@ -193,54 +174,54 @@ function WsmEdge(id) // {{{
    * Get the edge's id
    * @return {number} The edge's id
    */
-  this.getId = function() // {{{
+  this.getId = function()
   {
     return this.m_id;
-  }; // }}}
+  };
   
   /**
    * Sets the edge's contents
    * @param {string} contents The edge's contents
    */
-  this.setContents = function(contents) // {{{
+  this.setContents = function(contents)
   {
     this.m_contents = contents;
-  }; // }}}
+  };
 
   /**
    * Returns the edge's contents
    * @return {string} The edge's contents
    */
-  this.getContents = function() // {{{
+  this.getContents = function()
   {
     return this.m_contents;
-  }; // }}}
+  };
   
   /**
    * Determines if an Ajax call is involved in this edge
    * @return {boolean} <tt>true</tt> if an Ajax call occurred,
    *   <tt>false</tt> otherwise
    */
-  this.isAjax = function() // {{{
+  this.isAjax = function()
   {
     return this.m_isAjax;
-  }; // }}}
+  };
   
   /**
    * Sets whether an Ajax call is involved in this edge
    * @param {boolean} <tt>true</tt> if an Ajax call occurred,
    *   <tt>false</tt> otherwise
    */
-  this.setAjax = function(b) // {{{
+  this.setAjax = function(b)
   {
     this.m_isAjax = b;
-  }; // }}}
+  };
   
   /**
    * Sets the HTTP request associated with the edge
    * @param {WsmHttpRequest} The HTTP request, null to remove
    */
-  this.setHttpRequest = function(r) // {{{
+  this.setHttpRequest = function(r)
   {
     if (!(r instanceof WsmHttpRequest))
     {
@@ -248,34 +229,34 @@ function WsmEdge(id) // {{{
       return;
     }
     this.m_httpRequest(r);
-  }; // }}}
+  };
   
   /**
    * Returns the HTTP request associated with the edge
    * @return {WsmHttpRequest} The HTTP request, null if none
    */
-  this.getHttpRequest = function() // {{{
+  this.getHttpRequest = function()
   {
     return this.m_httpRequest();
-  }; // }}}
+  };
   
   /**
    * Sets the edge's destination
    * @param {number} destination The edge's destination
    */
-  this.setDestination = function(destination) // {{{
+  this.setDestination = function(destination)
   {
     this.m_destination = destination;
-  }; // }}}
+  };
 
   /**
    * Returns the edge's destination
    * @return {number} The edge's destination
    */
-  this.getDestination = function() // {{{
+  this.getDestination = function()
   {
     return this.m_destination;
-  }; // }}}
+  };
 
   /**
    * Checks for equality between two edges. <strong>NOTE:</strong> the
@@ -285,7 +266,7 @@ function WsmEdge(id) // {{{
    * @return {boolean} <tt>true</tt> if edges are equal, <tt>false</tt>
    *   otherwise
    */
-  this.equals = function(e) // {{{
+  this.equals = function(e)
   {
     if (e === undefined || e === null)
     {
@@ -304,23 +285,23 @@ function WsmEdge(id) // {{{
       return false;
     }
     return true;
-  }; // }}}
+  };
   /**
    * Adds an animation step to the edge. Each action performed in the
    * exploration is associated to an incrementing integer value. 
    * @param {number} The number of the animation step
    */
-  this.addAnimationStep = function(step_no) // {{{
+  this.addAnimationStep = function(step_no)
   {
     this.m_animationSteps.push(step_no);
-  }; // }}}
+  };
   
   /**
    * Outputs the contents of the node as a string in the DOT language
    * @param {number} source_id The ID of the source node for that transition
    * @return {string} The output string in DOT
    */
-  this.toDot = function(source_id) // {{{
+  this.toDot = function(source_id)
   {
     var out = "";
     out += source_id + " -> " + this.m_destination + " [label=\"" + this.m_contents + "\"]; // ";
@@ -333,14 +314,14 @@ function WsmEdge(id) // {{{
       out += this.m_animationSteps[i];
     }
     return out;
-  }; // }}}
+  };
   
   /**
    * Computes the global size of the EDGE, expressed as an
    * estimate in bytes.
    * @return {number} The estimated global byte size
    */
-  this.getByteSize = function() // {{{
+  this.getByteSize = function()
   {
     // We count four bytes for the ID, plus the size of the path, plus
     // the size of the HTTP request
@@ -350,7 +331,7 @@ function WsmEdge(id) // {{{
       size += this.m_httpRequest.getByteSize();
     }
     return size;
-  }; // }}}
+  };
   
   /**
    * Checks if a list contains the current edge, and returns it if the case
@@ -358,7 +339,7 @@ function WsmEdge(id) // {{{
    * @return {WsmEdge} The instance of the edge from the array, null if
    *   none is equal to the current edge
    */
-  this.elementOf = function(list) // {{{
+  this.elementOf = function(list)
   {
     for (var i = 0; i < list.length; i++)
     {
@@ -369,7 +350,7 @@ function WsmEdge(id) // {{{
       }
     }
     return null;
-  }; // }}}
+  };
 
   /**
    * Serializes the content of the object in XML format.
@@ -378,7 +359,7 @@ function WsmEdge(id) // {{{
    * @return {string} A string in XML format representing the object's
    *   contents
    */
-  this.toXml = function(indent) // {{{
+  this.toXml = function(indent)
   {
     var i = 0;
     if (indent === undefined)
@@ -416,9 +397,9 @@ function WsmEdge(id) // {{{
     out += indent + "  </visits>\n";
     out += indent + "</edge>\n";
     return out;
-  }; // }}}
+  };
   
-} // }}}
+}
 
 /**
  * Representation of a vertex in a web state machine. A vertex stores the
@@ -434,7 +415,7 @@ function WsmEdge(id) // {{{
  * </ul>
  * @constructor
  */
-function WsmNode(id) // {{{
+function WsmNode(id)
 {
   /**
    * Unique ID given to each node
@@ -472,10 +453,10 @@ function WsmNode(id) // {{{
    * Get the node's id
    * @return {number} The node's id
    */
-  this.getId = function() // {{{
+  this.getId = function()
   {
     return this.m_id;
-  }; // }}}
+  };
   
   /**
    * Returns whether the node is completely visited
@@ -484,7 +465,7 @@ function WsmNode(id) // {{{
    * @method
    * @public
    */
-  this.isExhausted = function(is_acceptable_click) // {{{
+  this.isExhausted = function(is_acceptable_click)
   {
     if (this.m_exhausted === true)
     {
@@ -507,45 +488,45 @@ function WsmNode(id) // {{{
       return false;
     }
     return true; // If all else fails, we are exhausted
-  }; // }}}
+  };
   
   /**
    * Sets the node's contents
    * @param {DomNode} contents The node's contents
    */
-  this.setContents = function(contents) // {{{
+  this.setContents = function(contents)
   {
     this.m_contents = contents;
-  }; // }}}
+  };
 
   /**
    * Returns the node's contents
    * @return {DomNode} The node's contents
    */
-  this.getContents = function() // {{{
+  this.getContents = function()
   {
     return this.m_contents;
-  }; // }}}
+  };
   
   /**
    * Adds an animation step to the node. Each action performed in the
    * exploration is associated to an incrementing integer value. 
    * @param {number} The number of the animation step
    */
-  this.addAnimationStep = function(step_no) // {{{
+  this.addAnimationStep = function(step_no)
   {
     this.m_animationSteps.push(step_no);
-  }; // }}}
+  };
   
   /**
    * Resets the click status of all element to "not clicked"
    */
-  this.resetClicks = function() // {{{
+  this.resetClicks = function()
   {
     this.m_exhausted = false;
     this.m_contents.setAllMarks(WsmNode.NOT_CLICKED);
     this.m_nextElementToClick = "";
-  }; // }}}
+  };
   
   /**
    * Returns the next element to click.
@@ -555,7 +536,7 @@ function WsmNode(id) // {{{
    * @return {string} A path to the next element to click, null if none
    *   could be found (i.e. we have exhausted this page)
    */
-  this.getNextElement = function(is_acceptable_click) // {{{
+  this.getNextElement = function(is_acceptable_click)
   {
     // A next element to click has already been computed, but not
     // queried yet: return it and erase it from memory
@@ -563,7 +544,7 @@ function WsmNode(id) // {{{
     out_edge.setContents(this.m_nextElementToClick);
     this.m_nextElementToClick = "";
     return out_edge;
-  }; // }}}
+  };
   
   /**
    * Precomputes the next element to click, in preparation for the next
@@ -574,7 +555,7 @@ function WsmNode(id) // {{{
    *   nothing is passed, the node will assume all elements can be clicked.
    * @private
    */
-  this.computeNextElement = function(is_acceptable_click) // {{{
+  this.computeNextElement = function(is_acceptable_click)
   {
     // Otherwise, must compute new next element to click
     if (is_acceptable_click === undefined)
@@ -614,33 +595,33 @@ function WsmNode(id) // {{{
     // If we made it here, no next click: node is exhausted
     this.m_exhausted = true;
     return;
-  }; // }}}
+  };
   
   /**
    * Computes the global size of the node, expressed as an
    * estimate in bytes.
    * @return {number} The estimated global byte size
    */
-  this.getByteSize = function() // {{{
+  this.getByteSize = function()
   {
     // We count four bytes for the ID, plus the size of the DOM
     return 4 + this.m_contents.getByteSize();
-  }; // }}}
+  };
   
   /**
    * Computes the size of the DOM tree, expressed in the number of nodes
    * @return {number} The size of the DOM tree
    */
-  this.countNodes = function() // {{{
+  this.countNodes = function()
   {
     return this.m_contents.countNodes();
-  }; // }}}
+  };
   
   /**
    * Outputs the contents of the node as a string in the DOT language
    * @return {string} The output string in DOT
    */
-  this.toDot = function() // {{{
+  this.toDot = function()
   {
     var out = "";
     out += this.m_id + " [shape=circle,label=\"" + this.m_id + "\"]; // ";
@@ -653,7 +634,7 @@ function WsmNode(id) // {{{
       out += this.m_animationSteps[i];
     }
     return out;
-  }; // }}}
+  };
 
   /**
    * Serializes the content of the object in XML format.
@@ -662,7 +643,7 @@ function WsmNode(id) // {{{
    * @return {string} A string in XML format representing the object's
    *   contents
    */
-  this.toXml = function(indent) // {{{
+  this.toXml = function(indent)
   {
     var i = 0;
     if (indent === undefined)
@@ -683,7 +664,7 @@ function WsmNode(id) // {{{
     out += indent + "  </contents>\n";
     out += indent + "</node>";
     return out;
-  }; // }}}
+  };
 }
 
 /**
@@ -711,7 +692,7 @@ WsmNode.CLICKED = 1;
  * manipulate).
  * @constructor
  */
-function PathSequence(ps) // {{{
+function PathSequence(ps)
 {
   /**
    * The array containing the elements
@@ -723,17 +704,17 @@ function PathSequence(ps) // {{{
    * Appends an element to the current path sequence
    * @param path_element The element to append
    */
-  this.append = function(path_element) // {{{
+  this.append = function(path_element)
   {
     this.m_elements.push(path_element);
-  }; // }}}
+  };
   
   /**
    * Returns the <i>i</i>-th element of the path sequence
    * @param {number} The position of the element to look for
    * @return The first element
    */
-  this.getElement = function(i) // {{{
+  this.getElement = function(i)
   {
     if (i >= this.m_elements.length || i < 0)
     {
@@ -741,14 +722,14 @@ function PathSequence(ps) // {{{
       return;
     }
     return this.m_elements[i];
-  }; // }}}
+  };
   
   /**
    * Returns the first element of the path sequence and removes it
    * from the sequence
    * @return The first element
    */
-  this.popFirstElement = function() // {{{
+  this.popFirstElement = function()
   {
     if (this.m_elements.length === 0)
     {
@@ -756,14 +737,14 @@ function PathSequence(ps) // {{{
       return;
     }
     return this.m_elements.shift();
-  }; // }}}
+  };
   
   /**
    * Returns the last element of the path sequence and removes it
    * from the sequence
    * @return The last element
    */
-  this.popLastElement = function() // {{{
+  this.popLastElement = function()
   {
     if (this.m_elements.length === 0)
     {
@@ -771,13 +752,13 @@ function PathSequence(ps) // {{{
       return;
     }
     return this.m_elements.pop();
-  }; // }}}
+  };
   
   /**
    * Returns the last element of the path sequence
    * @return The last element
    */
-  this.peekLastElement = function() // {{{
+  this.peekLastElement = function()
   {
     if (this.m_elements.length === 0)
     {
@@ -785,39 +766,39 @@ function PathSequence(ps) // {{{
       return;
     }
     return this.m_elements[this.m_elements.length - 1];
-  }; // }}}
+  };
   
   /**
    * Determines whether the path sequence is empty
    * @return true if empty, false otherwise
    */
-  this.isEmpty = function() // {{{
+  this.isEmpty = function()
   {
     return this.m_elements.length === 0;
-  }; // }}}
+  };
   
   /**
    * Computes the length of the path
    * @return {number} The length of the path
    */
-  this.getLength = function() // {{{
+  this.getLength = function()
   {
     return this.m_elements.length;
-  }; // }}}
+  };
   
   /**
    * Clears the path sequence
    */
-  this.clear = function() // {{{
+  this.clear = function()
   {
     this.m_elements = [];
-  }; // }}}
+  };
   
   /**
    * Outputs a path sequence as a string
    * @return The path sequence represented as a string
    */
-  this.toString = function() // {{{
+  this.toString = function()
   {
     var out = "";
     for (var i = 0; i < this.m_elements.length; i++)
@@ -830,7 +811,7 @@ function PathSequence(ps) // {{{
       out += path_element.toString();
     }
     return out;
-  }; // }}}
+  };
   
   // If a path sequence is passed to the constructor, use it to instantiate
   // a clone of the argument
@@ -842,7 +823,7 @@ function PathSequence(ps) // {{{
       this.m_elements.push(path_element);
     }
   }
-} // }}}
+}
 
 /**
  * A web state machine (WSM) is a directed graph whose nodes are "pages" and
@@ -867,7 +848,7 @@ function PathSequence(ps) // {{{
  * such an extension that can be used as scaffolding for custom WSMs.
  * @constructor
  */
-function WebStateMachine() // {{{
+function WebStateMachine()
 {
   /**
    * Array containing the WSM's nodes
@@ -969,10 +950,10 @@ function WebStateMachine() // {{{
    * @return {boolean} <tt>true</tt> if the two nodes should be considered
    *   equal, <tt>false</tt> otherwise
    */
-  this.nodesEqual = function() // {{{
+  this.nodesEqual = function()
   {
     console.error("nodesEqual must be overridden by WSM subclasses");
-  }; // }}}
+  };
   
   /**
    * The <em>function</em> that is used to decide whether the path
@@ -985,10 +966,10 @@ function WebStateMachine() // {{{
    *    would be clicked
    * @param {DomNode} The DOM tree of the current page
    */
-   this.isAcceptableClick = function(path, dom_node) // {{{
+   this.isAcceptableClick = function(path, dom_node)
    {
      console.error("isAcceptableClick must be overridden by WSM subclasses");
-   }; // }}}
+   };
   
   /**
    * Handles the situation where the WSM has reached a dead end and is
@@ -1006,10 +987,10 @@ function WebStateMachine() // {{{
    * @return {boolean} <tt>true</tt> if the exploration must continue,
    *   <tt>false</tt> if there is no unvisited page
    */
-   this.processReset = function(node_id) // {{{
+   this.processReset = function(node_id)
    {
      console.error("processReset must be overridden by WSM subclasses");
-   }; // }}}
+   };
    
   /**
    * Processes a DOM node before saving it to the WSM. This is used to
@@ -1020,10 +1001,10 @@ function WebStateMachine() // {{{
    * @param {DomNode} The original DOM tree
    * @return {DomNode} The processed DOM tree
    */
-   this.abstractNode = function(dom) // {{{
+   this.abstractNode = function(dom)
    {
      console.error("abstractNode must be overridden by WSM subclasses");
-   }; // }}}
+   };
    
   /**
    * Computes the global size of the WSM, expressed as an estimate in bytes.
@@ -1031,7 +1012,7 @@ function WebStateMachine() // {{{
    * of each transition.
    * @return {number} The estimated global byte size of the WSM
    */
-  this.getByteSize = function() // {{{
+  this.getByteSize = function()
   {
     var byte_size = 0, i = 0;
     for (i = 0; i < this.m_nodes.length; i++)
@@ -1053,37 +1034,37 @@ function WebStateMachine() // {{{
       }
     }
     return byte_size;
-  }; // }}}
+  };
   
   /**
    * Computes the number of nodes currently stored in the WSM
    * @return {number} The number of nodes in the WSM
    */
-  this.countNodes = function() // {{{
+  this.countNodes = function()
   {
     return this.m_nodes.length;
-  }; // }}}
+  };
   
   /**
    * Computes the number of edges (i.e. transitions) currently stored
    * in the WSM
    * @return {number} The number of edges in the WSM
    */
-  this.countEdges = function() // {{{
+  this.countEdges = function()
   {
     return this.m_edges.length;
-  }; // }}}
+  };
   
   /**
    * Resets the click status on all elements of the current DOM node
    * (marks them as unclicked). This should not have to be called, except
    * for debugging.
    */
-  this.resetClicks = function() // {{{
+  this.resetClicks = function()
   {
     var node = this.getNodeFromId(this.m_currentNodeId);
     node.resetClicks();
-  }; // }}}
+  };
   
   /**
    * Tells the WSM what the state of the current page is
@@ -1094,7 +1075,7 @@ function WebStateMachine() // {{{
    *   (or empty), indicates one has "jumped" to the present page, or that
    *   the current page is the start state of the WSM.
    */
-  this.setCurrentDom = function(d, click_path, isAjax) // {{{
+  this.setCurrentDom = function(d, click_path, isAjax)
   {
     var dom = null, node = null, tree_id = null;
     if (d instanceof Document)
@@ -1205,7 +1186,7 @@ function WebStateMachine() // {{{
     this.m_domTree = node.getContents();
     this.m_currentNodeId = tree_id;
     node.addAnimationStep(this.m_animationStepCounter++);
-  }; // }}}
+  };
   
   /**
    * Looks for a node in the graph based on its DOM contents
@@ -1213,7 +1194,7 @@ function WebStateMachine() // {{{
    * @return {WsmNode} The graph's node whose DOM contents is equal to the
    *   node passed as an argument, null otherwise
    */
-  this.getNodeFromDom = function(dom_node) // {{{
+  this.getNodeFromDom = function(dom_node)
   {
     for (var i = 0; i < this.m_nodes.length; i++)
     {
@@ -1225,7 +1206,7 @@ function WebStateMachine() // {{{
       }
     }
     return null;
-  }; // }}}
+  };
   
   /**
    * Looks for a node in the graph based on its ID
@@ -1233,7 +1214,7 @@ function WebStateMachine() // {{{
    * @return {WsmNode} The graph's node with given ID if present, null
    *    otherwise
    */
-  this.getNodeFromId = function(id) // {{{
+  this.getNodeFromId = function(id)
   {
     for (var i = 0; i < this.m_nodes.length; i++)
     {
@@ -1244,7 +1225,7 @@ function WebStateMachine() // {{{
       }
     }
     return null;
-  }; // }}}
+  };
   
   /**
    * Returns the next element to be clicked in the current DOM, according
@@ -1268,7 +1249,7 @@ function WebStateMachine() // {{{
    * @return {WsmEdge} The edge indicating the next step in the exploration,
    *   null if the exploration is completed
    */
-  this.getNextClick = function() // {{{
+  this.getNextClick = function()
   {
     if (!this.m_pathToFollow.isEmpty())
     {
@@ -1312,13 +1293,13 @@ function WebStateMachine() // {{{
     // the filtering function to use
     var path_to_next_elem = cur_node.getNextElement(this.isAcceptableClick);
     return path_to_next_elem;
-  }; // }}}
+  };
   
   /**
    * Outputs the contents of the WSM as a string in the DOT language
    * @return {string} The output string in DOT
    */
-  this.toDot = function() // {{{
+  this.toDot = function()
   {
     var i = 0;
     var out = "";
@@ -1346,7 +1327,7 @@ function WebStateMachine() // {{{
     out += "  0 -> 1; // 0\n";
     out += "}";
     return out;
-  }; // }}}
+  };
   
   /**
    * Serializes the content of the object in XML format.
@@ -1355,7 +1336,7 @@ function WebStateMachine() // {{{
    * @return {string} A string in XML format representing the object's
    *   contents
    */
-  this.toXml = function(indent) // {{{
+  this.toXml = function(indent)
   {
     var i = 0, node = null;
     if (indent === undefined)
@@ -1406,8 +1387,6 @@ function WebStateMachine() // {{{
     out += indent + "  </edges>\n";
     out += indent + "</wsm>";
     return out;
-  }; // }}}
+  };
   
-} // }}}
-
-/* :folding=explicit:wrap=none: */
+}

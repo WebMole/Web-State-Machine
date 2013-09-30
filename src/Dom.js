@@ -1,22 +1,3 @@
-/*
-    WebMole, an automated explorer and tester for Web 2.0 applications
-    Copyright (C) 2012-2013 Gabriel Le Breton, Fabien Maronnaud,
-    Sylvain Hallé et al.
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /**
  * Basic building block of a path expression. A path segment consists of a
  * single element name, followed by an index indicating its relative
@@ -25,27 +6,27 @@
  * but rather the <i>i</i>-th sibling <em>of name <code>E</code></em>.
  * @constructor
  */
-function PathSegment() // {{{
+function PathSegment()
 {
   this.m_name = "";
   this.m_position = 0;
   
-  this.getName = function() // {{{
+  this.getName = function()
   {
     return this.m_name;
-  }; // }}}
+  };
   
-  this.getPosition = function() // {{{
+  this.getPosition = function()
   {
     return this.m_position;
-  }; // }}}
+  };
   
-  this.toString = function() // {{{
+  this.toString = function()
   {
     return this.m_name + "[" + this.m_position + "]";
-  }; // }}}
+  };
   
-  this.parseFromString = function(s) // {{{
+  this.parseFromString = function(s)
   {
     var bits = s.split("[");
     if (bits.length == 1)
@@ -58,7 +39,7 @@ function PathSegment() // {{{
       this.m_position = parseInt(bits[1].substring(0, bits[1].length - 1), 10);
     }
   }; // }}}
-} // }}}
+}
 
 /**
  * Representation of a path inside a DOM document. This path is a sequence
@@ -74,7 +55,7 @@ function PathSegment() // {{{
  * @param {string} contents If specified, instantiates a path expression by
  *   parsing the contents of the string passed as an argument
  */
-function PathExpression(contents) // {{{
+function PathExpression(contents)
 {
   /**
    * The list of path segments contained in the expression
@@ -86,17 +67,17 @@ function PathExpression(contents) // {{{
    * path segments)
    * @return {number} The length of the path expression
    */
-  this.getLength = function() // {{{
+  this.getLength = function()
   {
     return this.m_pieces.length;
-  }; // }}}
+  };
   
   /**
    * Outputs a string representation of the path expression. This
    * representation is a slash-separated list of path segments.
    * @return {string} The path expression as a string
    */
-  this.toString = function() // {{{
+  this.toString = function()
   {
     var out = "";
     for (var i = 0; i < this.m_pieces.length; i++)
@@ -105,13 +86,13 @@ function PathExpression(contents) // {{{
       out += "/" + piece.toString();
     }
     return out;
-  }; // }}}
+  };
   
   /**
    * Parses a path expression from a string.
    * @param {string} s The string to parse
    */
-  this.parseFromString = function(s) // {{{
+  this.parseFromString = function(s)
   {
     var pieces = s.split("/");
     for (var i = 0; i < pieces.length; i++)
@@ -121,7 +102,7 @@ function PathExpression(contents) // {{{
       segment.parseFromString(piece);
       this.m_pieces.push(segment);
     }
-  }; // }}}
+  };
   
   /**
    * Returns a particular path segment of the expression.
@@ -129,7 +110,7 @@ function PathExpression(contents) // {{{
    * @return {PathSegment} The path segment to look for, null if position
    *   is out of bounds
    */
-  this.getSegment = function(pos) // {{{
+  this.getSegment = function(pos)
   {
     if (pos < 0 || pos >= this.m_pieces.length)
     {
@@ -137,20 +118,20 @@ function PathExpression(contents) // {{{
       return null;
     }
     return this.m_pieces[pos];
-  }; // }}}
+  };
 
   /**
    * Returns the last path segment of the expression.
    * @return {PathSegment} The last path segment, null if path is empty
    */
-  this.getLastSegment = function() // {{{
+  this.getLastSegment = function()
   {
     if (this.m_pieces.length >= 1)
     {
       return this.getSegment(this.m_pieces.length - 1);
     }
     return null;
-  }; // }}}
+  };
   
   /**
    * Determines if the path contains a segment of given name.
@@ -158,7 +139,7 @@ function PathExpression(contents) // {{{
    * @return {boolean} true or false depending on whether the path contains
    *   the name
    */
-  this.contains = function(s) // {{{
+  this.contains = function(s)
   {
     for (var i = 0; i < this.m_pieces.length; i++)
     {
@@ -169,7 +150,7 @@ function PathExpression(contents) // {{{
       }
     }
     return false;
-  }; // }}}
+  };
   
   // If something was passed to the constructor, use it to instantiate the
   // DOM node
@@ -178,7 +159,7 @@ function PathExpression(contents) // {{{
     this.parseFromString(contents);
   }
 
-} // }}}
+}
 
 /**
  * Attribute-value pair that can be contained in a DOM node.
@@ -188,11 +169,11 @@ function PathExpression(contents) // {{{
  * @param {string} name The attribute's name
  * @param {string} value The attribute's value
  */
-function DomNodeAttribute(name, value) // {{{
+function DomNodeAttribute(name, value)
 {
   this.m_name = name;
   this.m_value = value;
-} // }}}
+}
 
 /**
  * Basic building block for a nested structure of HTML-like elements.
@@ -201,7 +182,7 @@ function DomNodeAttribute(name, value) // {{{
  *   traversing the current Document object (e.g.
  *   <code>window.document</code> and cloning its contents
  */
-function DomNode(contents) // {{{
+function DomNode(contents)
 {
   
   this.m_isLeaf = false;
@@ -220,7 +201,7 @@ function DomNode(contents) // {{{
    */
   this.m_mark = 0;
   
-  this.toString = function(to_escape) // {{{
+  this.toString = function(to_escape)
   {
     var tag_beg = "<";
     var tag_end = ">";
@@ -249,39 +230,39 @@ function DomNode(contents) // {{{
     }
     out += "&lt;/" + this.m_name + "&gt;\n";
     return out;
-  }; // }}}
+  };
   
   /**
    * Sets a value to the mark field
    * @param m The value to set
    */
-  this.setMark = function(m) // {{{
+  this.setMark = function(m)
   {
     this.m_mark = m;
-  }; // }}}
+  };
   
   /**
    * Returns the value of the mark field
    * @return The mark value
    */
-  this.getMark = function() // {{{
+  this.getMark = function()
   {
     return this.m_mark;
-  }; // }}}
+  };
   
   /**
    * Sets the mark back to some default value
    */
-  this.resetMark = function() // {{{
+  this.resetMark = function()
   {
     this.m_mark = 0;
-  }; // }}}
+  };
   
   /**
    * Recursively sets the mark for all nodes
    * @param m The mark to set
    */
-  this.setAllMarks = function(m) // {{{
+  this.setAllMarks = function(m)
   {
     this.m_mark = m;
     for (var i = 0; i < this.m_children.length; i++)
@@ -289,16 +270,16 @@ function DomNode(contents) // {{{
       var child = this.m_children[i];
       child.setAllMarks(m);
     }
-  }; // }}}
+  };
   
   /**
    * Returns the name of the node
    * @return {string} The node name
    */
-  this.getName = function() // {{{
+  this.getName = function()
   {
     return this.m_name;
-  }; // }}}
+  };
   
   /**
    * Looks for first DOM node with mark value m, using a prefix
@@ -308,7 +289,7 @@ function DomNode(contents) // {{{
    * @return The <em>path</em> leading to the node (as a string), empty
    *    string otherwise
    */
-  this.prefixLookForMark = function(m, path) // {{{
+  this.prefixLookForMark = function(m, path)
   {
     /*if (this.m_name == "#document")
     {
@@ -358,7 +339,7 @@ function DomNode(contents) // {{{
       }
     }
     return null;
-  }; // }}}
+  };
 
   /**
    * Returns an element of the DOM tree based on a path expression written
@@ -368,11 +349,11 @@ function DomNode(contents) // {{{
    * @return {DomNode} The DOM node at the end of the path, null if not
    *    found
    */
-  this.getElementFromPathString = function(path_string) // {{{
+  this.getElementFromPathString = function(path_string)
   {
     var path = new PathExpression(path_string);
     return this.getElementFromPath(path);
-  }; // }}}
+  };
 
   /**
    * Returns an element of the DOM tree based on a path expression.
@@ -382,7 +363,7 @@ function DomNode(contents) // {{{
    * @return {DomNode} The DOM node at the end of the path, null if not
    *    found
    */
-  this.getElementFromPath = function(path, index) // {{{
+  this.getElementFromPath = function(path, index)
   {
     if (index === undefined)
     {
@@ -425,7 +406,7 @@ function DomNode(contents) // {{{
       }
     }
     return null;
-  }; // }}}
+  };
   
   /**
    * Sets/adds an attribute to the node. If the attribute already exists,
@@ -434,7 +415,7 @@ function DomNode(contents) // {{{
    * @param {string} The attribute name
    * @param {string} The value to assign to the attribute
    */
-  this.setAttribute = function(name, value) // {{{
+  this.setAttribute = function(name, value)
   {
     for (var i = 0; i < this.m_attributes.length; i++)
     {
@@ -448,7 +429,7 @@ function DomNode(contents) // {{{
     }
     var new_avp = new DomNodeAttribute(name, value);
     this.m_attributes.push(new_avp);
-  }; // }}}
+  };
   
   /**
    * Checks for equality between the current DOM node and another one.
@@ -459,7 +440,7 @@ function DomNode(contents) // {{{
    * @param {DomNode} other_node The other node to check for equality
    * @return {boolean} true or false
    */
-  this.equals = function(other_node) // {{{
+  this.equals = function(other_node)
   {
     var i = 0;
     if (other_node === undefined)
@@ -526,14 +507,14 @@ function DomNode(contents) // {{{
     }
     // If we made it here, everything we checked was equal; return true
     return true;
-  }; // }}}
+  };
   
   /**
    * Computes the global size of the node and its children, expressed as an
    * estimate in bytes.
    * @return {number} The estimated global byte size
    */
-  this.getByteSize = function() // {{{
+  this.getByteSize = function()
   {
     // We count four bytes for the ID, plus the size of all strings
     // (name, attributes and values)
@@ -549,13 +530,13 @@ function DomNode(contents) // {{{
       count += avp.m_name.length + avp.m_value.length;
     }
     return count;
-  }; // }}}
+  };
   
   /**
    * Computes the size of the DOM tree, expressed in the number of nodes
    * @return {number} The size of the DOM tree
    */
-  this.countNodes = function() // {{{
+  this.countNodes = function()
   {
     var count = 1;
     for (var i = 0; i < this.m_children.length; i++)
@@ -564,14 +545,14 @@ function DomNode(contents) // {{{
       count += child.countNodes();
     }
     return count;
-  }; // }}}
+  };
   
   /**
    * Fetches the value of the node's attribute
    * @param {string} The attribute to look for
    * @return {string} The attribute value, null if not found
    */
-  this.getAttribute = function(name) // {{{
+  this.getAttribute = function(name)
   {
     for (var i = 0; i < this.m_attributes.length; i++)
     {
@@ -582,13 +563,13 @@ function DomNode(contents) // {{{
       }
     }
     return null;
-  }; // }}}
+  };
   
   /**
    * Clones the current node (i.e. performs a deep copy)
    * @param {DomNode} other_node The DomNode to clone from
    */
-  this.clone = function(other_node) // {{{
+  this.clone = function(other_node)
   {
     var i = 0;
     if (!(other_node instanceof DomNode))
@@ -615,7 +596,7 @@ function DomNode(contents) // {{{
       var child = other_node.m_children[i];
       this.m_children.push(new DomNode(child));
     }
-  }; // }}}
+  };
   
   /**
    * Serializes the content of the object in XML format.
@@ -624,7 +605,7 @@ function DomNode(contents) // {{{
    * @return {string} A string in XML format representing the object's
    *   contents
    */
-  this.toXml = function(indent) // {{{
+  this.toXml = function(indent)
   {
     var i = 0;
     if (indent === undefined)
@@ -660,7 +641,7 @@ function DomNode(contents) // {{{
     out += indent + "  <mark><![CDATA[" + this.m_mark + "]]></mark>\n";
     out += indent + "</domNode>\n";
     return out;
-  }; // }}}
+  };
   
   // If something was passed to the constructor, use it to instantiate the
   // DOM node
@@ -681,7 +662,7 @@ function DomNode(contents) // {{{
  *
  * @param {document} e The document to parse
  */
-DomNode.parseFromDom = function(e) // {{{
+DomNode.parseFromDom = function(e)
 {
   var i = 0;
   var out = new DomNode();
@@ -725,13 +706,13 @@ DomNode.parseFromDom = function(e) // {{{
     }
   }
   return out;
-}; // }}}
+};
 
 /**
  * Internal function that parses lists of child nodes. Used by {@link
  * parseFromString, but should not be called directly
  */
-DomNode.parseFromStringChildren = function(s) // {{{
+DomNode.parseFromStringChildren = function(s)
 {
   var children = [];
   var sc = s;
@@ -768,7 +749,7 @@ DomNode.parseFromStringChildren = function(s) // {{{
     sc = sc.substring(right_tag_close + 1).trim();
   }
   return children;
-}; // }}}
+};
 
 /**
  * Instantiates the DomNode by parsing an HTML string.
@@ -780,7 +761,7 @@ DomNode.parseFromStringChildren = function(s) // {{{
  *
  * @param {string} s The string to parse from
  */
-DomNode.parseFromString = function(s) // {{{
+DomNode.parseFromString = function(s)
 {
   var el = DomNode.parseFromStringChildren(s);
   if (el.length >= 1)
@@ -788,7 +769,7 @@ DomNode.parseFromString = function(s) // {{{
     return el[0];
   }
   return null;
-}; // }}}
+};
 
 /**
  * Checks for equality between two DOM nodes. This is a static binary
@@ -798,14 +779,14 @@ DomNode.parseFromString = function(s) // {{{
  * @param {DomNode} n2 The second node to compare
  * @return true or false, depending on whether <code>n1.equals(n2)</code>
  */
-DomNode.are_equal = function(n1, n2) // {{{
+DomNode.are_equal = function(n1, n2)
 {
   if (!DomNode.prototype.isPrototypeOf(n1))
   {
     return false;
   }
   return n1.equals(n2);
-}; // }}}
+};
 
 /**
  * Whether to ignore attributes when comparing nodes
@@ -820,7 +801,7 @@ DomNode.IGNORE_ATTRIBUTES = true;
  * @type {boolean}
  */
 DomNode.IGNORE_HANDLERS = false;
-// }}}
+
 
 
 /**
@@ -834,7 +815,7 @@ DomNode.IGNORE_HANDLERS = false;
  * @return {Node} The element in the document at the end of the path; null
  *    if could not be found
  */
-function get_element_from_path(dom, path, index) // {{{
+function get_element_from_path(dom, path, index)
 {
   if (index === undefined)
   {
@@ -867,6 +848,4 @@ function get_element_from_path(dom, path, index) // {{{
     }
   }
   return null;
-} // }}}
-
-/* :folding=explicit:wrap=none: */
+}
