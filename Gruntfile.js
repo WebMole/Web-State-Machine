@@ -64,7 +64,7 @@ module.exports = function(grunt) {
         // For jasmine usage, see: http://pivotal.github.io/jasmine/
         // For grunt's jasmine, see: https://github.com/gruntjs/grunt-contrib-jasmine
         jasmine: {
-            customTemplate: {
+            wsm: {
                 src: 'src/**/*.js',
                 options: {
                     specs: 'spec/*Spec.js',
@@ -79,7 +79,7 @@ module.exports = function(grunt) {
                 tasks: ['jshint:gruntfile']
             },
             test: {
-                files: '<%= concat.dist.src %>',
+                files: ['<%= jasmine.wsm.src %>', '<%= jasmine.wsm.options.specs %>', '<%= jasmine.wsm.options.helpers%>'],
                 tasks: ['test']
             }
             // lib_test: {
@@ -96,14 +96,17 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-jasmine');
 
-    // Default task.
-    grunt.registerTask('default', ['jshint', 'concat', 'uglify']);
+    // Default task (grunt).
+    grunt.registerTask('default', ['jasmine', 'jshint', 'concat', 'uglify']);
 
     grunt.registerTask('debug', function() {
         grunt.log.write(grunt.file.readJSON('package.json').name);
     });
 
-    // Distribute
-    grunt.registerTask('test', ['jasmine', 'concat', 'uglify']);
+    // (grunt dev)
+    grunt.registerTask('dev', ['watch']);
+
+    // (grunt test)
+    grunt.registerTask('test', ['jasmine']);
 
 };
