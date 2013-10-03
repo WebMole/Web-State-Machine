@@ -662,7 +662,7 @@ function DomNode(contents)
  *
  * @param {document} e The document to parse
  */
-DomNode.parseFromDom = function(e)
+DomNode.parseFromDoc = function(e)
 {
   var i = 0;
   var out = new DomNode();
@@ -701,7 +701,7 @@ DomNode.parseFromDom = function(e)
     for (i = 0; i < e.childNodes.length; i++)
     {
       var child = e.childNodes[i];
-      var dn = DomNode.parseFromDom(child);
+      var dn = DomNode.parseFromDoc(child);
       out.m_children.push(dn);
     }
   }
@@ -757,7 +757,7 @@ DomNode.parseFromStringChildren = function(s)
  * HTML parsing intended for debugging purposes. Attributes are ignored
  * and recursive schemas (i.e. an element &lt;e&gt; within another
  * &lt;e&gt; will yield unexpected results. To create a faithful copy of
- * the current page, use {@link parseFromDom}.
+ * the current page, use {@link parseFromDoc}.
  *
  * @param {string} s The string to parse from
  */

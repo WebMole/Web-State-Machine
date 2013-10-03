@@ -15,7 +15,7 @@ describe("DOM manipulation", function() {
     });
 
     it("Parses a DOM from a document", function() {
-        var dd = DomNode.parseFromDom(document);
+        var dd = DomNode.parseFromDoc(document);
         // Not much we can test without knowing what is in document
         expect(dd).toBeDefined();
     });

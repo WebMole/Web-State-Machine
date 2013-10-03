@@ -1,4 +1,4 @@
-/*! Web-State-Machine - v0.0.1 - 2013-09-30
+/*! Web-State-Machine - v0.0.1 - 2013-10-02
 * Copyright (c) 2013 ; Licensed  */
 function BacktrackWsm() // extends WebStateMachine
 {
@@ -697,7 +697,7 @@ function DomNode(contents)
  *
  * @param {document} e The document to parse
  */
-DomNode.parseFromDom = function(e)
+DomNode.parseFromDoc = function(e)
 {
   var i = 0;
   var out = new DomNode();
@@ -736,7 +736,7 @@ DomNode.parseFromDom = function(e)
     for (i = 0; i < e.childNodes.length; i++)
     {
       var child = e.childNodes[i];
-      var dn = DomNode.parseFromDom(child);
+      var dn = DomNode.parseFromDoc(child);
       out.m_children.push(dn);
     }
   }
@@ -792,7 +792,7 @@ DomNode.parseFromStringChildren = function(s)
  * HTML parsing intended for debugging purposes. Attributes are ignored
  * and recursive schemas (i.e. an element &lt;e&gt; within another
  * &lt;e&gt; will yield unexpected results. To create a faithful copy of
- * the current page, use {@link parseFromDom}.
+ * the current page, use {@link parseFromDoc}.
  *
  * @param {string} s The string to parse from
  */
@@ -1321,19 +1321,19 @@ function WsmHttpRequest()
 WsmHttpRequest.codeToName = function(code)
 {
   var out = "";
-  if (code == WsmHttpRequest.GET)
+  if (code === WsmHttpRequest.GET)
   {
     out = "GET";
   }
-  else if (code == WsmHttpRequest.POST)
+  else if (code === WsmHttpRequest.POST)
   {
     out = "POST";
   }
-  else if (code == WsmHttpRequest.PUT)
+  else if (code === WsmHttpRequest.PUT)
   {
     out = "PUT";
   }
-  if (code == WsmHttpRequest.DELETE)
+  if (code === WsmHttpRequest.DELETE)
   {
     out = "DELETE";
   }
@@ -1560,7 +1560,10 @@ function WsmEdge(id)
   this.toDot = function(source_id)
   {
     var out = "";
-    out += source_id + " -> " + this.m_destination + " [label=\"" + this.m_contents + "\"]; // ";
+    var label = this.m_contents;
+    var color = "";
+    if (this.isAjax()) color = ",color=\"green\"";
+    out += source_id + " -> " + this.m_destination + " [label=\"" + label + "\"" + color + "]; // ";
     for (var i = 0; i < this.m_animationSteps.length; i++)
     {
       if (i > 0)
@@ -1663,6 +1666,7 @@ function WsmEdge(id)
  * <ul>
  *   <li>An ID. This numerical value is nonsensical and is only used to
  *     refer uniquely to any vertex stored in the WSM.</li>
+ *   <li>An url. The url when the node was created.</li>
  *   <li>A DOM tree, representing the contents of some page in a browser.
  *     This tree is a nested hierarchy of {@link DomNode}s. Node that
  *     DOM nodes themselves can recall whether they have been clicked or
@@ -1678,6 +1682,12 @@ function WsmNode(id)
    * @type {number}
    */
   this.m_id = id;
+
+  /**
+   * Url of the page when the node was created
+   * @type {string}
+   */
+  this.m_url = "";
   
   /**
    * Node contents
@@ -1762,6 +1772,24 @@ function WsmNode(id)
   this.getContents = function()
   {
     return this.m_contents;
+  };
+
+  /**
+   * Sets the node's url
+   * @param {string} url The node's url
+   */
+  this.setUrl = function(url)
+  {
+    this.m_url = url;
+  };
+
+  /**
+   * Returns the node's url
+   * @return {string} The node's url
+   */
+  this.getUrl = function()
+  {
+    return this.m_url;
   };
   
   /**
@@ -1880,7 +1908,10 @@ function WsmNode(id)
   this.toDot = function()
   {
     var out = "";
-    out += this.m_id + " [shape=circle,label=\"" + this.m_id + "\"]; // ";
+    var url = (this.m_url !== "") ? ",URL=\"" + this.m_url + "\"" : "";
+    var shape = "circle";
+    var label = this.m_id;
+    out += this.m_id + "[shape=" + shape + ",label=\"" + label + "\""+ url + "]; // ";
     for (var i = 0; i < this.m_animationSteps.length; i++)
     {
       if (i > 0)
@@ -2330,13 +2361,15 @@ function WebStateMachine()
    *   the current DOM tree). This argument is optional. When not specified
    *   (or empty), indicates one has "jumped" to the present page, or that
    *   the current page is the start state of the WSM.
+   * @param {boolean} isAjax Wether the current document was modified by an
+   *   ajax call or not.
    */
   this.setCurrentDom = function(d, click_path, isAjax)
   {
     var dom = null, node = null, tree_id = null;
     if (d instanceof Document)
     {
-      dom = DomNode.parseFromDom(d);
+      dom = DomNode.parseFromDoc(d);
     }
     else if (d instanceof DomNode)
     {
@@ -2361,8 +2394,11 @@ function WebStateMachine()
         console.log("Test oracle returned false!");
       }
     }
+    
     // Process the DOM contents with the abstraction method
     dom = this.abstractNode(dom);
+    
+    // This should be the first node
     if (this.m_nodes.length === 0)
     {
       // This is the first node we register; simply add it and do no
@@ -2370,6 +2406,7 @@ function WebStateMachine()
       this.m_idNodeCounter++;
       node = new WsmNode(this.m_idNodeCounter);
       node.setContents(dom);
+      node.setUrl(dom.getAttribute("url"));
       node.addAnimationStep(this.m_animationStepCounter++);
       this.m_nodes.push(node);
       this.m_currentNodeId = this.m_idNodeCounter;
@@ -2382,14 +2419,14 @@ function WebStateMachine()
     }
     if (this.m_expectedNextNodeId !== null)
     {
-      var nfd = this.getNodeFromDom(dom);
-      if (nfd === null)
+      var nodeFromDom = this.getNodeFromDom(dom);
+      if (nodeFromDom === null)
       {
         // Not much to do apart from warning of the discrepancy
         console.error("Sanity check fail: according to computed path, expected node ID was " + this.m_expectedNextNodeId + "; we are rather in a NEW node");
         return;
       }
-      var obtained_id = nfd.getId();
+      var obtained_id = nodeFromDom.getId();
       // Sanity check: make sure that the node we are supposed to land
       // is indeed the one we are in
       if (this.m_expectedNextNodeId != obtained_id)
