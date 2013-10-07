@@ -307,6 +307,7 @@ function WsmEdge(id)
     var label = this.m_contents;
     var color = "";
     if (this.isAjax()) color = ",color=\"green\"";
+    
     out += source_id + " -> " + this.m_destination + " [label=\"" + label + "\"" + color + "]; // ";
     for (var i = 0; i < this.m_animationSteps.length; i++)
     {
@@ -1194,6 +1195,7 @@ function WebStateMachine()
       // Tree was not present in the graph; create new node
       node = new WsmNode(++this.m_idNodeCounter);
       node.setContents(dom);
+      node.setUrl(dom.getAttribute("url"));
       this.m_nodes.push(node);
     }
     tree_id = node.getId();
