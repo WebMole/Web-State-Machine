@@ -1206,6 +1206,7 @@ function WebStateMachine()
       var trans = new WsmEdge(++this.m_idEdgeCounter);
       trans.setContents(click_path);
       trans.setDestination(tree_id);
+      trans.setAjax(isAjax);
       if (this.m_edges[this.m_currentNodeId] === undefined)
       {
         // Create an array if the slot for source node does not yet exist
